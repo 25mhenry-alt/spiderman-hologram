@@ -49,30 +49,30 @@ const suitConfigs = {
 
 const webConfigs = {
     standard: {
-        name: 'Standard Adhesive',
-        viscosity: 'Medium',
-        dissolveTime: '60 minutes',
+        name: 'STANDARD',
+        viscosity: 'MEDIUM',
+        dissolveTime: '60MIN',
         color: 0x00d4ff,
         emission: 0x00ffff
     },
     impact: {
-        name: 'Impact Webbing',
-        viscosity: 'High',
-        dissolveTime: '90 minutes',
+        name: 'IMPACT',
+        viscosity: 'HIGH',
+        dissolveTime: '90MIN',
         color: 0xff0000,
         emission: 0xff3333
     },
     ricochet: {
-        name: 'Ricochet Formula',
-        viscosity: 'Low',
-        dissolveTime: '30 minutes',
+        name: 'RICOCHET',
+        viscosity: 'LOW',
+        dissolveTime: '30MIN',
         color: 0x00ff00,
         emission: 0x00ff66
     },
     explosive: {
-        name: 'Explosive Charge',
-        viscosity: 'Very High',
-        dissolveTime: '120 minutes',
+        name: 'EXPLOSIVE',
+        viscosity: 'VERY HIGH',
+        dissolveTime: '120MIN',
         color: 0xffff00,
         emission: 0xffff99
     }
@@ -440,18 +440,18 @@ function transitionWeb(newWeb) {
 }
 
 // Suit selector buttons
-document.querySelectorAll('.suit-btn').forEach(btn => {
+document.querySelectorAll('.ctrl-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.suit-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.ctrl-btn').forEach(b => b.classList.remove('active'));
         e.target.classList.add('active');
         transitionSuit(e.target.dataset.suit);
     });
 });
 
 // Web selector buttons
-document.querySelectorAll('.web-btn').forEach(btn => {
+document.querySelectorAll('.web-ctrl-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.web-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.web-ctrl-btn').forEach(b => b.classList.remove('active'));
         e.target.classList.add('active');
         transitionWeb(e.target.dataset.web);
     });
@@ -480,6 +480,7 @@ intensitySlider.addEventListener('input', (e) => {
     mainLight.intensity = 1.5 * intensity;
     rimLight.intensity = 0.8 * intensity;
     glowMaterial.opacity = 0.15 * intensity;
+    document.getElementById('intensityValue').textContent = Math.round(intensity * 100) + '%';
 });
 
 // FPS Counter
@@ -519,9 +520,13 @@ function animate() {
     // Animate lights
     mainLight.intensity = 1.5 + Math.sin(Date.now() * 0.001) * 0.3;
 
-    // Update signal strength
-    const signalLevel = Math.floor((Math.sin(Date.now() * 0.003) + 1) * 5);
-    document.getElementById('signal').textContent = '█'.repeat(signalLevel) + '░'.repeat(10 - signalLevel);
+    // Update signal strength - animated dots
+    const signalLevel = Math.floor((Math.sin(Date.now() * 0.003) + 1) * 2.5);
+    let signalDisplay = '';
+    for (let i = 0; i < 5; i++) {
+        signalDisplay += i < signalLevel ? '● ' : '○ ';
+    }
+    document.getElementById('signal').textContent = signalDisplay;
 
     updateFPS();
 
