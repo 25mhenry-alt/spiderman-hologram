@@ -4,9 +4,16 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
+// Position canvas absolutely within the container
 renderer.setSize(container.clientWidth, container.clientHeight);
 renderer.setClearColor(0x000000, 0.1);
 renderer.shadowMap.enabled = true;
+renderer.domElement.style.position = 'absolute';
+renderer.domElement.style.top = '0';
+renderer.domElement.style.left = '0';
+renderer.domElement.style.zIndex = '1';
+
+container.style.position = 'relative';
 container.appendChild(renderer.domElement);
 
 camera.position.z = 3;
@@ -324,12 +331,12 @@ let isDragging = false;
 let previousMousePosition = { x: 0, y: 0 };
 let autoRotate = true;
 
-container.addEventListener('mousedown', (e) => {
+renderer.domElement.addEventListener('mousedown', (e) => {
     isDragging = true;
     previousMousePosition = { x: e.clientX, y: e.clientY };
 });
 
-container.addEventListener('mousemove', (e) => {
+renderer.domElement.addEventListener('mousemove', (e) => {
     if (isDragging) {
         autoRotate = false;
         const deltaX = e.clientX - previousMousePosition.x;
@@ -340,11 +347,11 @@ container.addEventListener('mousemove', (e) => {
     }
 });
 
-container.addEventListener('mouseup', () => {
+renderer.domElement.addEventListener('mouseup', () => {
     isDragging = false;
 });
 
-container.addEventListener('wheel', (e) => {
+renderer.domElement.addEventListener('wheel', (e) => {
     e.preventDefault();
     camera.position.z += e.deltaY * 0.001;
     camera.position.z = Math.max(1.5, Math.min(10, camera.position.z));
