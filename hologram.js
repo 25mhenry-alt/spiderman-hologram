@@ -11,6 +11,76 @@ container.appendChild(renderer.domElement);
 
 camera.position.z = 3;
 
+// Suit & Web Configuration
+const suitConfigs = {
+    stark: {
+        name: 'STARK SUIT',
+        bodyColor: 0x0055ff,
+        accentColor: 0xff0000,
+        metalness: 0.5,
+        roughness: 0.4,
+        emissive: 0x001155
+    },
+    homemade: {
+        name: 'HOMEMADE SUIT',
+        bodyColor: 0xaa0000,
+        accentColor: 0x0055ff,
+        metalness: 0.2,
+        roughness: 0.8,
+        emissive: 0x440000
+    },
+    stealth: {
+        name: 'STEALTH SUIT',
+        bodyColor: 0x1a1a2e,
+        accentColor: 0x00ff00,
+        metalness: 0.7,
+        roughness: 0.3,
+        emissive: 0x0a0a0f
+    },
+    ironspider: {
+        name: 'IRON SPIDER SUIT',
+        bodyColor: 0xffaa00,
+        accentColor: 0xff0000,
+        metalness: 0.8,
+        roughness: 0.2,
+        emissive: 0x553300
+    }
+};
+
+const webConfigs = {
+    standard: {
+        name: 'Standard Adhesive',
+        viscosity: 'Medium',
+        dissolveTime: '60 minutes',
+        color: 0x00d4ff,
+        emission: 0x00ffff
+    },
+    impact: {
+        name: 'Impact Webbing',
+        viscosity: 'High',
+        dissolveTime: '90 minutes',
+        color: 0xff0000,
+        emission: 0xff3333
+    },
+    ricochet: {
+        name: 'Ricochet Formula',
+        viscosity: 'Low',
+        dissolveTime: '30 minutes',
+        color: 0x00ff00,
+        emission: 0x00ff66
+    },
+    explosive: {
+        name: 'Explosive Charge',
+        viscosity: 'Very High',
+        dissolveTime: '120 minutes',
+        color: 0xffff00,
+        emission: 0xffff99
+    }
+};
+
+let currentSuit = 'stark';
+let currentWeb = 'standard';
+
 // Lighting Setup
 const ambientLight = new THREE.AmbientLight(0x00d4ff, 0.4);
 scene.add(ambientLight);
@@ -27,6 +97,9 @@ scene.add(rimLight);
 // Spider-Man Model Creation
 const spiderManGroup = new THREE.Group();
 scene.add(spiderManGroup);
+
+// Store references to suit materials for easy updates
+let suitMaterials = {};
 
 const poses = {
     idle: () => {
@@ -74,14 +147,17 @@ function createSpiderMan() {
     rightEye.position.set(0.15, 1.2, 0.3);
     spiderManGroup.add(rightEye);
 
-    // Torso
+    // Torso (suit body)
     const torsoGeometry = new THREE.BoxGeometry(0.45, 0.7, 0.35);
+    const suitConfig = suitConfigs[currentSuit];
     const bodyMaterial = new THREE.MeshStandardMaterial({
-        color: 0x0055ff,
-        metalness: 0.4,
-        roughness: 0.5,
-        emissive: 0x001155
+        color: suitConfig.bodyColor,
+        metalness: suitConfig.metalness,
+        roughness: suitConfig.roughness,
+        emissive: suitConfig.emissive
     });
+    suitMaterials.body = bodyMaterial;
+    
     const torso = new THREE.Mesh(torsoGeometry, bodyMaterial);
     torso.position.y = 0.4;
     torso.castShadow = true;
@@ -89,7 +165,12 @@ function createSpiderMan() {
 
     // Spider Logo on chest (glowing circle)
     const logoGeometry = new THREE.CircleGeometry(0.15, 32);
-    const logoMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, emissive: 0xff0000 });
+    const logoMaterial = new THREE.MeshBasicMaterial({ 
+        color: suitConfig.accentColor, 
+        emissive: suitConfig.accentColor 
+    });
+    suitMaterials.logo = logoMaterial;
+    
     const logo = new THREE.Mesh(logoGeometry, logoMaterial);
     logo.position.set(0, 0.5, 0.2);
     spiderManGroup.add(logo);
@@ -101,11 +182,23 @@ function createSpiderMan() {
     leftArm.castShadow = true;
     spiderManGroup.add(leftArm);
 
-    // Right Arm
+    // Right Arm (with web shooter indicator)
     const rightArm = new THREE.Mesh(armGeometry, bodyMaterial);
     rightArm.position.set(0.4, 0.5, 0);
     rightArm.castShadow = true;
     spiderManGroup.add(rightArm);
+
+    // Web Shooter on right arm (small glowing box)
+    const shooterGeometry = new THREE.BoxGeometry(0.12, 0.08, 0.12);
+    const shooterMaterial = new THREE.MeshBasicMaterial({ 
+        color: webConfigs[currentWeb].color, 
+        emissive: webConfigs[currentWeb].emission 
+    });
+    suitMaterials.shooter = shooterMaterial;
+    
+    const shooter = new THREE.Mesh(shooterGeometry, shooterMaterial);
+    shooter.position.set(0.45, 0.2, 0);
+    spiderManGroup.add(shooter);
 
     // Left Leg
     const legGeometry = new THREE.BoxGeometry(0.2, 0.7, 0.2);
@@ -120,8 +213,20 @@ function createSpiderMan() {
     rightLeg.castShadow = true;
     spiderManGroup.add(rightLeg);
 
-    // Web lines (decorative)
-    const webMaterial = new THREE.LineBasicMaterial({ color: 0x00d4ff, linewidth: 2 });
+    // Dynamic web lines
+    updateWebLines();
+}
+
+function updateWebLines() {
+    // Remove old web lines
+    const oldWebLines = spiderManGroup.children.filter(child => child.userData.isWebLine);
+    oldWebLines.forEach(line => spiderManGroup.remove(line));
+
+    // Create new web lines with current web color
+    const webMaterial = new THREE.LineBasicMaterial({ 
+        color: webConfigs[currentWeb].color, 
+        linewidth: 2 
+    });
     const webPoints = [
         new THREE.Vector3(-0.3, 0.8, 0.25),
         new THREE.Vector3(0.3, 0.6, 0.25),
@@ -129,6 +234,7 @@ function createSpiderMan() {
     ];
     const webGeometry = new THREE.BufferGeometry().setFromPoints(webPoints);
     const webLine = new THREE.Line(webGeometry, webMaterial);
+    webLine.userData.isWebLine = true;
     spiderManGroup.add(webLine);
 }
 
@@ -242,6 +348,113 @@ container.addEventListener('wheel', (e) => {
     e.preventDefault();
     camera.position.z += e.deltaY * 0.001;
     camera.position.z = Math.max(1.5, Math.min(10, camera.position.z));
+});
+
+// Smooth suit transition with hologram effect
+function transitionSuit(newSuit) {
+    if (newSuit === currentSuit) return;
+
+    currentSuit = newSuit;
+    const suitConfig = suitConfigs[currentSuit];
+
+    // Smooth color transition
+    const transitionDuration = 600;
+    const startTime = Date.now();
+
+    const transitionLoop = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / transitionDuration, 1);
+
+        // Flash effect during transition
+        const flash = Math.sin(progress * Math.PI * 4) * 0.3;
+        
+        if (suitMaterials.body) {
+            suitMaterials.body.emissiveIntensity = 0.5 + flash;
+        }
+        if (suitMaterials.logo) {
+            suitMaterials.logo.emissiveIntensity = 0.7 + flash;
+        }
+
+        if (progress === 1) {
+            // Apply final colors
+            if (suitMaterials.body) {
+                suitMaterials.body.color.setHex(suitConfig.bodyColor);
+                suitMaterials.body.metalness = suitConfig.metalness;
+                suitMaterials.body.roughness = suitConfig.roughness;
+                suitMaterials.body.emissive.setHex(suitConfig.emissive);
+                suitMaterials.body.emissiveIntensity = 0.3;
+            }
+            if (suitMaterials.logo) {
+                suitMaterials.logo.color.setHex(suitConfig.accentColor);
+                suitMaterials.logo.emissive.setHex(suitConfig.accentColor);
+                suitMaterials.logo.emissiveIntensity = 0.5;
+            }
+            
+            // Update suit indicator
+            document.getElementById('suitIndicator').textContent = suitConfig.name;
+        } else {
+            requestAnimationFrame(transitionLoop);
+        }
+    };
+
+    transitionLoop();
+}
+
+// Smooth web fluid transition
+function transitionWeb(newWeb) {
+    if (newWeb === currentWeb) return;
+
+    currentWeb = newWeb;
+    const webConfig = webConfigs[currentWeb];
+
+    // Smooth shooter material transition
+    const transitionDuration = 400;
+    const startTime = Date.now();
+
+    const transitionLoop = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / transitionDuration, 1);
+
+        if (suitMaterials.shooter) {
+            suitMaterials.shooter.emissiveIntensity = 0.6 + Math.sin(progress * Math.PI) * 0.4;
+        }
+
+        if (progress === 1) {
+            if (suitMaterials.shooter) {
+                suitMaterials.shooter.color.setHex(webConfig.color);
+                suitMaterials.shooter.emissive.setHex(webConfig.emission);
+                suitMaterials.shooter.emissiveIntensity = 0.6;
+            }
+            updateWebLines();
+            
+            // Update fluid info
+            document.getElementById('fluidType').textContent = webConfig.name;
+            document.getElementById('fluidViscosity').textContent = webConfig.viscosity;
+            document.getElementById('fluidDissolve').textContent = webConfig.dissolveTime;
+        } else {
+            requestAnimationFrame(transitionLoop);
+        }
+    };
+
+    transitionLoop();
+}
+
+// Suit selector buttons
+document.querySelectorAll('.suit-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.suit-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        transitionSuit(e.target.dataset.suit);
+    });
+});
+
+// Web selector buttons
+document.querySelectorAll('.web-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.web-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        transitionWeb(e.target.dataset.web);
+    });
 });
 
 // UI Controls
