@@ -3,35 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spider-Man Holographic Simulator</title>
+    <title>Spider-Man Holographic Display System</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <div class="hologram-display" id="hologramContainer"></div>
+        <div class="hologram-display" id="hologramContainer">
+            <div class="hologram-info-overlay">
+                <div class="suit-indicator" id="suitIndicator">STARK SUIT</div>
+                <div class="signature-line"></div>
+            </div>
+        </div>
         
         <div class="ui-panel">
-            <h1>HOLOGRAPHIC DISPLAY</h1>
+            <h1>⟨ HOLOGRAPHIC SYSTEM ⟩</h1>
+            
             <div class="info">
-                <p>SUBJECT: Spider-Man</p>
-                <p>STATUS: <span class="status-active">ACTIVE</span></p>
-                <p>SIGNAL: <span id="signal">█████████░</span></p>
+                <p>SUBJECT: Peter Parker</p>
+                <p>ALIAS: <span class="status-active">SPIDER-MAN</span></p>
+                <p>SIGNAL: <span id="signal">██████████</span></p>
+            </div>
+            
+            <div class="section-divider"></div>
+            
+            <div class="suit-selector">
+                <h3>⟨ SUIT DESIGNS ⟩</h3>
+                <div class="suit-buttons">
+                    <button class="suit-btn active" data-suit="stark">STARK</button>
+                    <button class="suit-btn" data-suit="homemade">HOMEMADE</button>
+                    <button class="suit-btn" data-suit="stealth">STEALTH</button>
+                    <button class="suit-btn" data-suit="ironspider">IRON SPIDER</button>
+                </div>
+            </div>
+            
+            <div class="section-divider"></div>
+            
+            <div class="web-selector">
+                <h3>⟨ WEB SHOOTER CONFIG ⟩</h3>
+                <div class="web-buttons">
+                    <button class="web-btn active" data-web="standard">STANDARD</button>
+                    <button class="web-btn" data-web="impact">IMPACT</button>
+                    <button class="web-btn" data-web="ricochet">RICOCHET</button>
+                    <button class="web-btn" data-web="explosive">EXPLOSIVE</button>
+                </div>
+            </div>
+            
+            <div class="section-divider"></div>
+            
+            <div class="web-fluid">
+                <h3>⟨ WEB FLUID ANALYSIS ⟩</h3>
+                <div class="fluid-info" id="fluidInfo">
+                    <p><strong>Type:</strong> <span id="fluidType">Standard Adhesive</span></p>
+                    <p><strong>Viscosity:</strong> <span id="fluidViscosity">Medium</span></p>
+                    <p><strong>Dissolve Time:</strong> <span id="fluidDissolve">60 minutes</span></p>
+                </div>
             </div>
             
             <div class="controls">
-                <h3>CONTROLS</h3>
-                <button id="poseBtn" class="btn">Change Pose</button>
-                <button id="toggleParticles" class="btn">Toggle Particles</button>
-                <button id="toggleRotation" class="btn">Pause/Resume</button>
+                <h3>⟨ DISPLAY CONTROLS ⟩</h3>
+                <button id="poseBtn" class="btn">CYCLE POSE</button>
+                <button id="toggleParticles" class="btn">PARTICLE FX</button>
+                <button id="toggleRotation" class="btn">ROTATION</button>
             </div>
             
             <div class="slider-group">
-                <label>Intensity:</label>
+                <label>INTENSITY:</label>
                 <input type="range" id="intensitySlider" min="0.3" max="2" step="0.1" value="1">
             </div>
             
             <div class="info-text">
-                <p>Drag to rotate • Scroll to zoom</p>
+                <p>🖱️ Drag to rotate • 🔍 Scroll to zoom</p>
                 <p id="fps">FPS: 60</p>
             </div>
         </div>
