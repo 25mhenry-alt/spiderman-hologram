@@ -7,73 +7,76 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
+    <div class="main-container">
+        <!-- HOLOGRAM CENTER -->
         <div class="hologram-display" id="hologramContainer">
-            <div class="hologram-info-overlay">
-                <div class="suit-indicator" id="suitIndicator">STARK SUIT</div>
-                <div class="signature-line"></div>
+            <div class="hologram-overlay">
+                <div class="corner-marker top-left"></div>
+                <div class="corner-marker top-right"></div>
+                <div class="corner-marker bottom-left"></div>
+                <div class="corner-marker bottom-right"></div>
+                
+                <div class="hologram-title" id="suitIndicator">SPIDER-MAN</div>
+                <div class="hologram-status">
+                    <span id="signal">● ● ● ● ●</span>
+                </div>
             </div>
         </div>
-        
-        <div class="ui-panel">
-            <h1>⟨ HOLOGRAPHIC SYSTEM ⟩</h1>
-            
-            <div class="info">
-                <p>SUBJECT: Peter Parker</p>
-                <p>ALIAS: <span class="status-active">SPIDER-MAN</span></p>
-                <p>SIGNAL: <span id="signal">██████████</span></p>
-            </div>
-            
-            <div class="section-divider"></div>
-            
-            <div class="suit-selector">
-                <h3>⟨ SUIT DESIGNS ⟩</h3>
-                <div class="suit-buttons">
-                    <button class="suit-btn active" data-suit="stark">STARK</button>
-                    <button class="suit-btn" data-suit="homemade">HOMEMADE</button>
-                    <button class="suit-btn" data-suit="stealth">STEALTH</button>
-                    <button class="suit-btn" data-suit="ironspider">IRON SPIDER</button>
+
+        <!-- CONTROL PANEL -->
+        <div class="control-panel">
+            <!-- SUIT SELECTION -->
+            <div class="panel-section">
+                <div class="section-title">SUIT DESIGNS</div>
+                <div class="button-grid">
+                    <button class="ctrl-btn active" data-suit="stark">STARK</button>
+                    <button class="ctrl-btn" data-suit="homemade">HOMEMADE</button>
+                    <button class="ctrl-btn" data-suit="stealth">STEALTH</button>
+                    <button class="ctrl-btn" data-suit="ironspider">IRON SPIDER</button>
                 </div>
             </div>
-            
-            <div class="section-divider"></div>
-            
-            <div class="web-selector">
-                <h3>⟨ WEB SHOOTER CONFIG ⟩</h3>
-                <div class="web-buttons">
-                    <button class="web-btn active" data-web="standard">STANDARD</button>
-                    <button class="web-btn" data-web="impact">IMPACT</button>
-                    <button class="web-btn" data-web="ricochet">RICOCHET</button>
-                    <button class="web-btn" data-web="explosive">EXPLOSIVE</button>
+
+            <!-- WEB SHOOTER SELECTION -->
+            <div class="panel-section">
+                <div class="section-title">WEB SHOOTER CONFIG</div>
+                <div class="button-grid">
+                    <button class="web-ctrl-btn active" data-web="standard">STANDARD</button>
+                    <button class="web-ctrl-btn" data-web="impact">IMPACT</button>
+                    <button class="web-ctrl-btn" data-web="ricochet">RICOCHET</button>
+                    <button class="web-ctrl-btn" data-web="explosive">EXPLOSIVE</button>
                 </div>
             </div>
-            
-            <div class="section-divider"></div>
-            
-            <div class="web-fluid">
-                <h3>⟨ WEB FLUID ANALYSIS ⟩</h3>
-                <div class="fluid-info" id="fluidInfo">
-                    <p><strong>Type:</strong> <span id="fluidType">Standard Adhesive</span></p>
-                    <p><strong>Viscosity:</strong> <span id="fluidViscosity">Medium</span></p>
-                    <p><strong>Dissolve Time:</strong> <span id="fluidDissolve">60 minutes</span></p>
+
+            <!-- FLUID DATA -->
+            <div class="panel-section">
+                <div class="section-title">FLUID COMPOSITION</div>
+                <div class="data-display">
+                    <div class="data-line"><span class="label">TYPE:</span> <span id="fluidType">STANDARD</span></div>
+                    <div class="data-line"><span class="label">VISCOSITY:</span> <span id="fluidViscosity">MEDIUM</span></div>
+                    <div class="data-line"><span class="label">DISSOLVE:</span> <span id="fluidDissolve">60MIN</span></div>
                 </div>
             </div>
-            
-            <div class="controls">
-                <h3>⟨ DISPLAY CONTROLS ⟩</h3>
-                <button id="poseBtn" class="btn">CYCLE POSE</button>
-                <button id="toggleParticles" class="btn">PARTICLE FX</button>
-                <button id="toggleRotation" class="btn">ROTATION</button>
+
+            <!-- DISPLAY OPTIONS -->
+            <div class="panel-section">
+                <div class="section-title">DISPLAY OPTIONS</div>
+                <div class="button-grid-single">
+                    <button class="option-btn" id="poseBtn">POSE</button>
+                    <button class="option-btn" id="toggleParticles">PARTICLES</button>
+                    <button class="option-btn" id="toggleRotation">ROTATE</button>
+                </div>
+                
+                <div class="intensity-control">
+                    <span class="label">INTENSITY</span>
+                    <input type="range" id="intensitySlider" min="0.3" max="2" step="0.1" value="1">
+                    <span id="intensityValue">100%</span>
+                </div>
             </div>
-            
-            <div class="slider-group">
-                <label>INTENSITY:</label>
-                <input type="range" id="intensitySlider" min="0.3" max="2" step="0.1" value="1">
-            </div>
-            
-            <div class="info-text">
-                <p>🖱️ Drag to rotate • 🔍 Scroll to zoom</p>
-                <p id="fps">FPS: 60</p>
+
+            <!-- STATS -->
+            <div class="panel-section footer">
+                <div class="stat-line"><span id="fps">FPS: 60</span></div>
+                <div class="stat-line">DRAG • SCROLL TO ZOOM</div>
             </div>
         </div>
     </div>
