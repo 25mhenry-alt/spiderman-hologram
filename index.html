@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spider-Man Holographic Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="hologram-display" id="hologramContainer"></div>
+        
+        <div class="ui-panel">
+            <h1>HOLOGRAPHIC DISPLAY</h1>
+            <div class="info">
+                <p>SUBJECT: Spider-Man</p>
+                <p>STATUS: <span class="status-active">ACTIVE</span></p>
+                <p>SIGNAL: <span id="signal">█████████░</span></p>
+            </div>
+            
+            <div class="controls">
+                <h3>CONTROLS</h3>
+                <button id="poseBtn" class="btn">Change Pose</button>
+                <button id="toggleParticles" class="btn">Toggle Particles</button>
+                <button id="toggleRotation" class="btn">Pause/Resume</button>
+            </div>
+            
+            <div class="slider-group">
+                <label>Intensity:</label>
+                <input type="range" id="intensitySlider" min="0.3" max="2" step="0.1" value="1">
+            </div>
+            
+            <div class="info-text">
+                <p>Drag to rotate • Scroll to zoom</p>
+                <p id="fps">FPS: 60</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="hologram.js"></script>
+</body>
+</html>
